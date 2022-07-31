@@ -1,15 +1,16 @@
+from multiprocessing import context
 from rest_framework.response import Response
 #from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from rest_framework import status
-from inmueblesList_App.models import Edificaciones,Empresa
+from inmueblesList_App.models import Edificacion,Empresa
 from inmueblesList_App.api.serializer import EdificacionSerializer,EmpresaSerializer
 
 
 class EmpresaListAV(APIView):
     def get(self, request):
         empresas = Empresa.objects.all();
-        serializer = EmpresaSerializer(empresas,many=True);
+        serializer = EmpresaSerializer(empresas,many=True,context={'request':request});
         return Response(serializer.data);
     
     def post(self, request):
@@ -22,7 +23,7 @@ class EmpresaListAV(APIView):
 
 class EdificacionListAV(APIView):
     def get(self, request):
-        inmuebles = Edificaciones.objects.all();
+        inmuebles = Edificacion.objects.all();
         serializer = EdificacionSerializer(inmuebles,many=True);
         return Response(serializer.data);
     
@@ -38,14 +39,14 @@ class EdificacionListAV(APIView):
 class EdificacionDetalleAV(APIView):
     def get(self, request, pk):        
         try:
-            inmueble = Edificaciones.objects.get(pk=pk);
+            inmueble = Edificacion.objects.get(pk=pk);
             serializer = EdificacionSerializer(inmueble);
             return Response(serializer.data)
-        except Edificaciones.DoesNotExist:
+        except Edificacion.DoesNotExist:
             return Response({'Error':'No existe el inmueble'},status=status.HTTP_404_NOT_FOUND);
     
     def put(self, request, pk):
-        inmueble = Edificaciones.objects.get(pk=pk);
+        inmueble = Edificacion.objects.get(pk=pk);
         de_serializer = EdificacionSerializer(inmueble,data=request.data);
         if de_serializer.is_valid():
             de_serializer.save();
@@ -55,10 +56,10 @@ class EdificacionDetalleAV(APIView):
     
     def delete(self, request, pk):
         try:
-            inmueble = Edificaciones.objects.get(pk=pk);
+            inmueble = Edificacion.objects.get(pk=pk);
             inmueble.delete();
             return Response(status=status.HTTP_204_NO_CONTENT);
-        except Edificaciones.DoesNotExist:
+        except Edificacion.DoesNotExist:
             return Response({'Error':'No existe el inmueble'},status=status.HTTP_404_NOT_FOUND);
 
 

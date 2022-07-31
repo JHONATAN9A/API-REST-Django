@@ -1,22 +1,52 @@
 from rest_framework import serializers
-from inmueblesList_App.models import Edificaciones,Empresa
+from inmueblesList_App.models import Edificacion,Empresa
 
 
-class EmpresaSerializer(serializers.Serializer):
+class EdificacionSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = Edificacion
+        fields = "__all__"
+        #fields = ['direccion','pais','descripcion']
+        #exclude =['id','imagen']
+
+class EmpresaSerializer(serializers.ModelSerializer):
+    edificacionlist =  EdificacionSerializer(many=True,read_only=True)
+    #edificacionlist =  serializers.StringRelatedField(many=True)
+    #edificacionlist =  serializers.PrimaryKeyRelatedField(many=True,read_only=True)
+    # edificacionlist =  serializers.HyperlinkedRelatedField(
+    #                     many=True,
+    #                     read_only=True,
+    #                     view_name="Edificación detalle"
+    #                     )
     class Meta:
         model = Empresa
         fields = "__all__"
+
         
 
-class EdificacionSerializer(serializers.ModelSerializer):
-    longitud_direccion = serializers.SerializerMethodField()
-    
-    
-    class Meta:
-        model = Edificaciones
-        #fields = "__all__"
-        #fields = ['direccion','pais','descripcion']
-        exclude =['id','imagen']
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     # def get_longitud_direccion(self, object):
     #     cantidad_caracteres = len(object.direccion)
